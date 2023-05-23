@@ -195,6 +195,12 @@ class TestAccountService(TestCase):
         for i in range(5):
             self.assertEqual(response.get_json()[i]["name"], accounts[i].name)
 
-
-
-    # ADD YOUR TEST CASES HERE ...
+    def test_error_handlers(self):
+        """It should return a 405 error"""
+        new_account = AccountFactory()
+        response = self.client.put("/accounts",
+            json=new_account.serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        
