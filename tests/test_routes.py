@@ -148,5 +148,43 @@ class TestAccountService(TestCase):
         response = self.client.delete("/accounts/0")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_update_account(self):
+        """It should update an account with new information"""
+        accounts = self._create_accounts(5)
+        new_account = AccountFactory()
+        response = self.client.put(f'/accounts/{accounts[0].id}',
+            json=new_account.serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(f'/accounts/{accounts[0].id}', content_type="application/json")
+        self.assertEqual(response.get_json()["name"], new_account.name)
+
+    def test_update_account_not_found(self):
+        """It should return a 404 error when asked to update an account which does not exist"""
+        new_account = AccountFactory()
+        response = self.client.put("/accounts/0",
+            json=new_account.serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_bad_request(self):
+        """It should not update an Account when sending the wrong data"""
+        accounts = self._create_accounts(5)
+        response = self.client.put(f'/accounts/{accounts[0].id}', json={"name": "not enough data"})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_unsupported_media_type(self):
+        """It should not update an Account when sending the wrong media type"""
+        accounts = self._create_accounts(5)
+        new_account = AccountFactory()
+        response = self.client.put(
+            f'/accounts/{accounts[0].id}',
+            json=new_account.serialize(),
+            content_type="test/html"
+        )
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
 
     # ADD YOUR TEST CASES HERE ...
