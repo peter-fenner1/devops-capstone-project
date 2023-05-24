@@ -57,7 +57,6 @@ def create_accounts():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
-
 ######################################################################
 # LIST ALL ACCOUNTS
 ######################################################################
@@ -68,7 +67,7 @@ def list_accounts():
     Lists all Accounts
     This endpoint will read all Accounts and return them as a list
     """
-    app.logger.info("Request to list all Accounts")
+    app.logger.info(f'Request to list all Accounts')
     accounts = Account.all()
     acc_list = []
     for account in accounts:
@@ -77,7 +76,6 @@ def list_accounts():
     return make_response(
         jsonify(acc_list), status.HTTP_200_OK
     )
-
 
 ######################################################################
 # READ AN ACCOUNT
