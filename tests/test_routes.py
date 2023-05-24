@@ -153,9 +153,9 @@ class TestAccountService(TestCase):
         accounts = self._create_accounts(5)
         new_account = AccountFactory()
         response = self.client.put(f'/accounts/{accounts[0].id}',
-            json=new_account.serialize(),
-            content_type="application/json"
-        )
+                                   json=new_account.serialize(),
+                                   content_type="application/json"
+                                   )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(f'/accounts/{accounts[0].id}', content_type="application/json")
         self.assertEqual(response.get_json()["name"], new_account.name)
@@ -164,9 +164,9 @@ class TestAccountService(TestCase):
         """It should return a 404 error when asked to update an account which does not exist"""
         new_account = AccountFactory()
         response = self.client.put("/accounts/0",
-            json=new_account.serialize(),
-            content_type="application/json"
-        )
+                                   json=new_account.serialize(),
+                                   content_type="application/json"
+                                   )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_bad_request(self):
@@ -189,7 +189,7 @@ class TestAccountService(TestCase):
     def test_list_accounts(self):
         """It should list all accounts"""
         accounts = self._create_accounts(5)
-        response = self.client.get(f'/accounts', content_type="application/json")
+        response = self.client.get("/accounts", content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.get_json()), 5)
         for i in range(5):
@@ -199,8 +199,7 @@ class TestAccountService(TestCase):
         """It should return a 405 error"""
         new_account = AccountFactory()
         response = self.client.put("/accounts",
-            json=new_account.serialize(),
-            content_type="application/json"
-        )
+                                   json=new_account.serialize(),
+                                   content_type="application/json"
+                                   )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        
